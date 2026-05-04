@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BPR System — Esme Consumer Pvt. Ltd.</title>
+  <meta name="description" content="Batch Packing Record — Esme Consumer Pvt. Ltd., Baddi" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════ LOGIN PAGE ═══════════ -->
+<div id="login-page" class="page active">
+  <div class="login-bg">
+    <div class="login-blob blob-1"></div>
+    <div class="login-blob blob-2"></div>
+    <div class="login-blob blob-3"></div>
+  </div>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-esme">ESME</div>
+        <div class="logo-text">
+          <h1>Batch Packing Record</h1>
+          <p>Esme Consumer Pvt. Ltd., Baddi · H.P.-173205</p>
+        </div>
+      </div>
+      <div class="login-divider"></div>
+      <p class="login-select-label">Select Your Role to Continue</p>
+      <div class="login-roles">
+        <div class="role-badge qa-role" onclick="selectRole('QA_EXEC')">
+          <div class="role-dot qa-dot"></div>
+          <div class="role-info">
+            <div class="role-name">QA Executive</div>
+            <div class="role-id">QA_EXEC · Header &amp; Product Setup</div>
+          </div>
+          <div class="role-check" id="check-QA_EXEC"></div>
+        </div>
+        <div class="role-badge store-role" onclick="selectRole('STORE_EXEC')">
+          <div class="role-dot store-dot"></div>
+          <div class="role-info">
+            <div class="role-name">Store Executive</div>
+            <div class="role-id">STORE_EXEC · Packing Material Issue</div>
+          </div>
+          <div class="role-check" id="check-STORE_EXEC"></div>
+        </div>
+        <div class="role-badge prod-role" onclick="selectRole('PROD_SUP')">
+          <div class="role-dot prod-dot"></div>
+          <div class="role-info">
+            <div class="role-name">Production Supervisor</div>
+            <div class="role-id">PROD_SUP · Line Clearance &amp; Packing</div>
+          </div>
+          <div class="role-check" id="check-PROD_SUP"></div>
+        </div>
+        <div class="role-badge ipqa-role" onclick="selectRole('IPQA_EXEC')">
+          <div class="role-dot ipqa-dot"></div>
+          <div class="role-info">
+            <div class="role-name">IPQA Executive</div>
+            <div class="role-id">IPQA_EXEC · Verification &amp; Final Submit</div>
+          </div>
+          <div class="role-check" id="check-IPQA_EXEC"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="login-id">Login ID</label>
+        <div class="input-wrapper">
+          <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" id="login-id" placeholder="Click a role above or type ID" autocomplete="off" onkeydown="if(event.key==='Enter')handleLogin()" />
+        </div>
+      </div>
+      <div id="login-error" class="error-msg hidden">⚠️ Invalid ID. Use: QA_EXEC · STORE_EXEC · PROD_SUP · IPQA_EXEC</div>
+      <button class="btn-login" onclick="handleLogin()">
+        <span>Sign In</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ BPR PAGE ═══════════ -->
+<div id="bpr-page" class="page">
+
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="topbar-left">
+      <div class="logo-esme-small">ESME</div>
+      <div>
+        <div class="topbar-title">BATCH PACKING RECORD</div>
+        <div class="topbar-sub">ESME-QA-SOP-04-F-02 · ESME/QA/BPR-01 · Baddi, H.P.</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div id="user-badge" class="user-badge"></div>
+      <button id="share-btn" class="btn-primary" style="margin-right: 8px; font-weight: 600;" onclick="handleShare()">
+        🔗 Share Link
+      </button>
+      <button id="print-btn" class="btn-print hidden" onclick="handlePrint()">
+        🖨️ Print / Save PDF
+      </button>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Workflow Stepper -->
+  <div class="workflow-stepper">
+    <div class="step" id="step-0"><div class="step-dot" id="sdot-0">1</div><div class="step-label">Header<br><span>QA Exec</span></div></div>
+    <div class="step-line"></div>
+    <div class="step" id="step-1"><div class="step-dot" id="sdot-1">2</div><div class="step-label">Material<br><span>Store Exec</span></div></div>
+    <div class="step-line"></div>
+    <div class="step" id="step-2"><div class="step-dot" id="sdot-2">3</div><div class="step-label">Clearance<br><span>Production</span></div></div>
+    <div class="step-line"></div>
+    <div class="step" id="step-3"><div class="step-dot" id="sdot-3">4</div><div class="step-label">Coding<br><span>Production</span></div></div>
+    <div class="step-line"></div>
+    <div class="step" id="step-4"><div class="step-dot" id="sdot-4">5</div><div class="step-label">IPQC<br><span>IPQA</span></div></div>
+    <div class="step-line"></div>
+    <div class="step" id="step-5"><div class="step-dot" id="sdot-5">6</div><div class="step-label">FG Transfer<br><span>Production</span></div></div>
+  </div>
+
+  <!-- Tab Nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tb-0" onclick="switchTab(0)">📋 Header</button>
+    <button class="tab-btn" id="tb-1" onclick="switchTab(1)">📦 Material Issue</button>
+    <button class="tab-btn" id="tb-2" onclick="switchTab(2)">✅ Line Clearance</button>
+    <button class="tab-btn" id="tb-3" onclick="switchTab(3)">🔍 Coding Verify</button>
+    <button class="tab-btn" id="tb-4" onclick="switchTab(4)">⚖️ IPQC &amp; Weight</button>
+    <button class="tab-btn" id="tb-5" onclick="switchTab(5)">🚛 FG Transfer</button>
+  </div>
+
+  <main class="bpr-main">
+
+    <!-- ══ TAB 0: BPR HEADER (QA Executive) ══ -->
+    <div class="tab-panel active" id="tab-0">
+      <div class="section-card qa-section">
+        <div class="section-header qa-header">
+          <div>
+            <div class="section-badge qa-badge">🟡 QA EXECUTIVE ZONE</div>
+            <h2 class="section-title">BPR Header — Product Setup</h2>
+            <p class="section-desc">Fill all product identification fields before other teams begin work.</p>
+          </div>
+          <div class="lock-pill" id="lock-header">✏️ Editable</div>
+        </div>
+        <div class="bpr-header-block">
+          <div class="company-row">
+            <div class="company-brand">ESME<div class="company-city">BADDI</div></div>
+            <div class="doc-meta">
+              <div class="doc-meta-row"><span>Format No.</span><span>ESME-QA-SOP-04-F-02</span></div>
+              <div class="doc-meta-row"><span>BPR No.</span><span>ESME/QA/BPR-01</span></div>
+            </div>
+            <div class="company-addr">Esme Consumer Pvt. Ltd.,<br>Baddi, H.P.-173205</div>
+          </div>
+          <div class="header-fields">
+            <div class="hf-row">
+              <div class="hf-group"><label>Product Name</label><input id="h-product-name" class="hf-input" placeholder="Product name" oninput="updateHeader('productName',this.value)"/></div>
+              <div class="hf-group"><label>Batch Size</label><input id="h-batch-size" class="hf-input" placeholder="e.g. 10,000 units" oninput="updateHeader('batchSize',this.value)"/></div>
+              <div class="hf-group"><label>Effective Date</label><input type="date" id="h-eff-date" class="hf-input" oninput="updateHeader('effectiveDate',this.value)"/></div>
+              <div class="hf-group"><label>Revision No.</label><input id="h-rev-no" class="hf-input" value="02" oninput="updateHeader('revisionNo',this.value)"/></div>
+            </div>
+            <div class="hf-row">
+              <div class="hf-group"><label>Batch No.</label><input id="h-batch-no" class="hf-input" placeholder="ESME/YYYY/NNN" oninput="updateHeader('batchNo',this.value)"/></div>
+              <div class="hf-group"><label>Mfg. Date</label><input type="date" id="h-mfg-date" class="hf-input" oninput="updateHeader('mfgDate',this.value)"/></div>
+              <div class="hf-group"><label>SKU</label><input id="h-sku" class="hf-input" placeholder="SKU code" oninput="updateHeader('sku',this.value)"/></div>
+              <div class="hf-group"><label>MRP (₹)</label><input id="h-mrp" class="hf-input" placeholder="₹0.00" oninput="updateHeader('mrp',this.value)"/></div>
+            </div>
+            <div class="hf-row">
+              <div class="hf-group"><label>Shade No.</label><input id="h-shade-no" class="hf-input" placeholder="Shade code" oninput="updateHeader('shadeNo',this.value)"/></div>
+              <div class="hf-group"><label>Expiry / BUB</label><input type="date" id="h-expiry" class="hf-input" oninput="updateHeader('expiry',this.value)"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="section-footer">
+          <div class="complete-row">
+            <label class="complete-check"><input type="checkbox" id="complete-header" onchange="markComplete('header')"> Mark Header as Complete &amp; Lock</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 1: PACKING MATERIAL ISSUE (Store Executive + Production) ══ -->
+    <div class="tab-panel" id="tab-1">
+      <div class="section-card store-section">
+        <div class="section-header store-header">
+          <div>
+            <div class="section-badge store-badge">🔵 STORE EXECUTIVE ZONE</div>
+            <h2 class="section-title">Section 1 — Packing Material Issue Sheet</h2>
+            <p class="section-desc">Page 01 of 05 · Material columns by Store Executive · Sign column by Production Supervisor</p>
+          </div>
+          <div class="lock-pill" id="lock-material">✏️ Editable</div>
+        </div>
+        <div class="table-wrap">
+          <table class="bpr-table" id="material-table">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Material Description</th>
+                <th>A.R. No.</th>
+                <th>Required Qty.</th>
+                <th>Used Qty.</th>
+                <th>Rejected Qty.</th>
+                <th>Returned Qty. (WIP Store)</th>
+                <th>Sign (Production Supervisor)</th>
+              </tr>
+            </thead>
+            <tbody id="material-body"></tbody>
+          </table>
+        </div>
+        <div class="section-footer">
+          <label class="complete-check"><input type="checkbox" id="complete-material" onchange="markComplete('material')"> Mark Section 1 as Complete &amp; Lock</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 2: AREA LINE CLEARANCE (Production Supervisor) ══ -->
+    <div class="tab-panel" id="tab-2">
+      <div class="section-card prod-section">
+        <div class="section-header prod-header">
+          <div>
+            <div class="section-badge prod-badge">🟠 PRODUCTION SUPERVISOR ZONE</div>
+            <h2 class="section-title">Section 2 — Area Line Clearance Checklist</h2>
+            <p class="section-desc">Page 02 of 05 · Checked By: Production Supervisor · Verified By: IPQA Executive</p>
+          </div>
+          <div class="lock-pill" id="lock-clearance">✏️ Editable</div>
+        </div>
+        <div class="lc-fields">
+          <div class="lc-grid">
+            <div class="lc-group"><label>Date</label><input type="date" id="lc-date" class="lc-input" oninput="updateLC('date',this.value)"/></div>
+            <div class="lc-group"><label>Shift</label><input id="lc-shift" class="lc-input" placeholder="A / B / C" oninput="updateLC('shift',this.value)"/></div>
+            <div class="lc-group"><label>Section</label><input id="lc-section" class="lc-input" placeholder="Section name" oninput="updateLC('section',this.value)"/></div>
+            <div class="lc-group"><label>Line No.</label><input id="lc-lineno" class="lc-input" placeholder="Line number" oninput="updateLC('lineNo',this.value)"/></div>
+            <div class="lc-group"><label>Cleaning Start Time</label><input type="time" id="lc-start" class="lc-input" oninput="updateLC('cleanStart',this.value)"/></div>
+            <div class="lc-group"><label>Cleaning End Time</label><input type="time" id="lc-end" class="lc-input" oninput="updateLC('cleanEnd',this.value)"/></div>
+            <div class="lc-group"><label>Previous Product Name</label><input id="lc-prev-prod" class="lc-input" placeholder="Previous product" oninput="updateLC('prevProduct',this.value)"/></div>
+            <div class="lc-group"><label>Previous Batch No.</label><input id="lc-prev-batch" class="lc-input" placeholder="Previous batch" oninput="updateLC('prevBatch',this.value)"/></div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="bpr-table" id="clearance-table">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Line Clearance Check Points</th>
+                <th colspan="2">Checked By (Production)</th>
+                <th colspan="2">Verified By (IPQA)</th>
+                <th>Remarks</th>
+              </tr>
+              <tr>
+                <th></th><th></th>
+                <th>Yes</th><th>No</th>
+                <th>Yes</th><th>No</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="clearance-body"></tbody>
+          </table>
+        </div>
+        <div class="sign-row">
+          <div class="sign-block">
+            <label>Checked By (Sign/Date) — Production Supervisor</label>
+            <div class="sig-pair">
+              <canvas id="sig-lc-prod" class="sig-canvas" width="280" height="80"></canvas>
+              <input type="date" id="lc-prod-date" class="lc-input" style="width:140px"/>
+              <button onclick="clearSig('lc-prod')" class="sig-clear-btn">Clear</button>
+            </div>
+          </div>
+          <div class="sign-block">
+            <label>Verified By (Sign/Date) — IPQA Executive</label>
+            <div class="sig-pair">
+              <canvas id="sig-lc-ipqa" class="sig-canvas" width="280" height="80"></canvas>
+              <input type="date" id="lc-ipqa-date" class="lc-input" style="width:140px"/>
+              <button onclick="clearSig('lc-ipqa')" class="sig-clear-btn">Clear</button>
+            </div>
+          </div>
+        </div>
+        <div class="section-footer">
+          <label class="complete-check"><input type="checkbox" id="complete-clearance" onchange="markComplete('clearance')"> Mark Section 2 as Complete &amp; Lock</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 3: CODING VERIFICATION (Production + IPQA) ══ -->
+    <div class="tab-panel" id="tab-3">
+      <div class="section-card prod-section">
+        <div class="section-header prod-header">
+          <div>
+            <div class="section-badge prod-badge">🟠 PRODUCTION + 🟣 IPQA ZONE</div>
+            <h2 class="section-title">Section 3 — Coding Verification Sheet</h2>
+            <p class="section-desc">Page 03 of 05 · Inner Box &amp; Shipper coding verification</p>
+          </div>
+          <div class="lock-pill" id="lock-coding">✏️ Editable</div>
+        </div>
+        <div class="coding-packs" id="coding-packs">
+          <!-- generated by JS -->
+        </div>
+        <div class="section-footer">
+          <label class="complete-check"><input type="checkbox" id="complete-coding" onchange="markComplete('coding')"> Mark Section 3 as Complete &amp; Lock</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 4: IPQC FILLING + WEIGHT (IPQA Executive) ══ -->
+    <div class="tab-panel" id="tab-4">
+      <div class="section-card ipqa-section">
+        <div class="section-header ipqa-header">
+          <div>
+            <div class="section-badge ipqa-badge">🟣 IPQA EXECUTIVE ZONE</div>
+            <h2 class="section-title">Section 4 — IPQC Filling Checklist &amp; Weight Observation</h2>
+            <p class="section-desc">Page 04 of 05 · All fields filled by IPQA Executive</p>
+          </div>
+          <div class="lock-pill" id="lock-ipqc">✏️ Editable</div>
+        </div>
+
+        <!-- IPQC Filling Checklist -->
+        <div class="subsection-title">4. IPQC Filling Checklist</div>
+        <div class="lc-grid" style="margin:0 24px 16px">
+          <div class="lc-group"><label>Date</label><input type="date" id="ipqc-date" class="lc-input" oninput="updateIPQC('date',this.value)"/></div>
+          <div class="lc-group"><label>Time</label><input type="time" id="ipqc-time" class="lc-input" oninput="updateIPQC('time',this.value)"/></div>
+          <div class="lc-group"><label>Section</label><input id="ipqc-section" class="lc-input" oninput="updateIPQC('section',this.value)"/></div>
+          <div class="lc-group"><label>Line No.</label><input id="ipqc-lineno" class="lc-input" oninput="updateIPQC('lineNo',this.value)"/></div>
+          <div class="lc-group"><label>Shift</label><input id="ipqc-shift" class="lc-input" oninput="updateIPQC('shift',this.value)"/></div>
+        </div>
+
+        <!-- Bulk Status -->
+        <div class="subsection-title">Bulk Status</div>
+        <div class="bulk-status-grid">
+          <div class="bs-group"><label>Appearance (Ok/Not Ok)</label><input id="ipqc-appearance" class="lc-input" placeholder="Ok / Not Ok" oninput="updateIPQC('appearance',this.value)"/></div>
+          <div class="bs-group"><label>Odor (Ok/Not Ok)</label><input id="ipqc-odor" class="lc-input" placeholder="Ok / Not Ok" oninput="updateIPQC('odor',this.value)"/></div>
+          <div class="bs-group"><label>Color (Ok/Not Ok)</label><input id="ipqc-color" class="lc-input" placeholder="Ok / Not Ok" oninput="updateIPQC('color',this.value)"/></div>
+          <div class="bs-group"><label>Foreign Particles (Yes/No)</label><input id="ipqc-particles" class="lc-input" placeholder="Yes / No" oninput="updateIPQC('foreignParticles',this.value)"/></div>
+        </div>
+
+        <!-- Weight Observation -->
+        <div class="subsection-title">Weight Observation Sheet</div>
+        <div class="weight-grid">
+          <div class="lc-group"><label>Claim Wt.</label><input id="wt-claim" class="lc-input" oninput="updateIPQC('claimWt',this.value)"/></div>
+          <div class="lc-group"><label>Mini. Wt.</label><input id="wt-mini" class="lc-input" oninput="updateIPQC('miniWt',this.value)"/></div>
+          <div class="lc-group"><label>Max. Wt.</label><input id="wt-max" class="lc-input" oninput="updateIPQC('maxWt',this.value)"/></div>
+        </div>
+        <div class="table-wrap">
+          <table class="bpr-table" id="weight-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
+                <th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>Avg.</th>
+              </tr>
+            </thead>
+            <tbody id="weight-body"></tbody>
+          </table>
+        </div>
+
+        <!-- IPQC Packing Checklist -->
+        <div class="subsection-title" style="margin-top:24px">5. IPQC Packing Checklist</div>
+        <div class="lc-grid" style="margin:0 24px 16px">
+          <div class="lc-group"><label>Line No.</label><input id="pk-lineno" class="lc-input" oninput="updatePacking('lineNo',this.value)"/></div>
+          <div class="lc-group"><label>Section</label><input id="pk-section" class="lc-input" oninput="updatePacking('section',this.value)"/></div>
+          <div class="lc-group"><label>Mfg. Licence No.</label><input id="pk-mfg-lic" class="lc-input" value="M HIM/COS/08/119" readonly/></div>
+          <div class="lc-group"><label>Shift</label><input id="pk-shift" class="lc-input" oninput="updatePacking('shift',this.value)"/></div>
+        </div>
+        <div class="table-wrap" id="packing-table-wrap"></div>
+
+        <div class="section-footer">
+          <label class="complete-check"><input type="checkbox" id="complete-ipqc" onchange="markComplete('ipqc')"> Mark Section 4 &amp; 5 as Complete &amp; Lock</label>
+          <button id="finalize-btn" class="btn-finalize hidden" onclick="handleFinalize()">🏁 Finalize &amp; Submit BPR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB 5: DAILY FG TRANSFER (Production Supervisor) ══ -->
+    <div class="tab-panel" id="tab-5">
+      <div class="section-card prod-section">
+        <div class="section-header prod-header">
+          <div>
+            <div class="section-badge prod-badge">🟠 PRODUCTION SUPERVISOR ZONE</div>
+            <h2 class="section-title">Section 6 — Daily Packing &amp; FG Store Transfer Record</h2>
+            <p class="section-desc">Page 05 of 05</p>
+          </div>
+          <div class="lock-pill" id="lock-fg">✏️ Editable</div>
+        </div>
+        <div class="table-wrap">
+          <table class="bpr-table">
+            <thead>
+              <tr>
+                <th>Date</th><th>Shift</th><th>Box</th>
+                <th>Total FG Produced</th><th>Total FG Transferred</th>
+                <th>Sign (Production Supervisor)</th>
+              </tr>
+            </thead>
+            <tbody id="fg-body"></tbody>
+          </table>
+        </div>
+        <div class="section-footer">
+          <label class="complete-check"><input type="checkbox" id="complete-fg" onchange="markComplete('fg')"> Mark Section 6 as Complete &amp; Lock</label>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Save Bar -->
+  <div class="save-bar">
+    <div class="save-info" id="save-info">Select a section to begin editing.</div>
+    <div class="save-actions">
+      <button class="btn-secondary" onclick="handleReset()">↺ Reset My Fields</button>
+      <button class="btn-primary" onclick="handleSave()">💾 Save Progress</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"><span id="toast-text"></span></div>
+
+<!-- Modal -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-icon" id="modal-icon">⚠️</div>
+    <h3 id="modal-title">Confirm</h3>
+    <p id="modal-body"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" id="modal-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
